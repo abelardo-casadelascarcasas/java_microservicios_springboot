@@ -40,7 +40,7 @@ import org.springframework.core.env.Environment;
 
 
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("/customer/v1")
 public class CustomerRestController {
     
     private final String URL_PRODUCTS = "http://BUSINESSDOMAIN-PRODUCT/product";
