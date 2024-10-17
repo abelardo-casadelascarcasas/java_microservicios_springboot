@@ -86,9 +86,24 @@ public class CustomerRestController {
         return "El valor de " + property +  " es " + env.getProperty(property);
     }
     
+    /**
+     *
+     * @return
+     */
     @GetMapping()
-    public List<Customer> list() {
-        return customerRepository.findAll();
+    public ResponseEntity<List<Customer>> list() {
+        List<Customer> findAll = customerRepository.findAll();
+        
+        boolean isNullList = (null == findAll);
+        boolean isEmpty = true;
+        if (!isNullList) 
+            isEmpty = findAll.isEmpty();
+        
+        if (isNullList || isEmpty) {
+            return ResponseEntity.noContent().build();
+        }
+        
+        return ResponseEntity.ok(findAll);
     }
     
     @GetMapping("/{id}")
@@ -96,9 +111,8 @@ public class CustomerRestController {
          Optional<Customer> customer = CustomerRESTControllerHelper.getCustomerFromRepository(customerRepository, id);
         if (customer.isPresent()) {
             return new ResponseEntity<>(customer.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     
     @PutMapping("/{id}")
@@ -110,9 +124,8 @@ public class CustomerRestController {
             newcustomer.setPhone(input.getPhone());
              Customer save = customerRepository.save(newcustomer);
           return new ResponseEntity<>(save, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     
     @PostMapping
